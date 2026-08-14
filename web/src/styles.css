@@ -300,6 +300,45 @@ dd {
   scrollbar-color: var(--hairline) transparent;
 }
 
+/* folder grouping: section heads inside the scrolling list. Each head sticks
+   to its own group so the folder you are reading is always named, and the
+   next head pushes it out rather than stacking on top of it */
+.session-group-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  /* bleed over .session-list's horizontal padding so the head spans the rail
+     and rows cannot show through beside it while scrolling under */
+  margin: 8px -10px 2px;
+  padding: 6px 12px 5px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--faint);
+  font-size: var(--text-xs);
+  font-weight: 560;
+}
+
+.session-group:first-child .session-group-head {
+  margin-top: 0;
+}
+
+/* paths carry meaning in their case, so no uppercase transform here */
+.session-group-name {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.session-group-count {
+  flex: none;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
 .session-row {
   position: relative;
   width: 100%;
@@ -372,6 +411,107 @@ dd {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* the folder control sits on the search line, so the two read as one row of
+   ways to narrow the list */
+.rail-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rail-search-row .rail-filter {
+  flex: 1;
+  min-width: 0;
+}
+
+/* folder filter: the rail's one place to narrow by working directory and to
+   switch the list between flat and folder-sectioned */
+.rail-folder {
+  position: relative;
+  flex: none;
+}
+
+.rail-folder-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  /* right-anchored: the trigger sits at the rail's right edge, so a
+     left-anchored pop this wide would hang off the rail */
+  right: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  padding: 8px;
+  width: 244px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 6px;
+  background: var(--panel-raised);
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.4);
+}
+
+.rail-folder-list {
+  display: grid;
+  /* minmax(0, …) as in .rail-map-pop: a row's intrinsic width is its full
+     untruncated label plus the count, which would overflow the pop */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  /* the rail is short in the responsive top-bar layout, so cap against the
+     viewport as well as an absolute ceiling */
+  max-height: min(288px, 44vh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline) transparent;
+}
+
+.rail-folder-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  text-align: left;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.rail-folder-row:hover {
+  color: var(--ink);
+  background: var(--panel);
+}
+
+.rail-folder-row.active {
+  color: var(--ink);
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+}
+
+/* labels are relative tails (quirq/web); the disambiguating segments sit at
+   the head, so truncate at the end and let title carry the full path */
+.rail-folder-name {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rail-folder-count {
+  flex: none;
+  margin-left: auto;
+  color: var(--faint);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.rail-folder-row.active .rail-folder-count {
+  color: var(--muted);
+}
+
+/* a narrowed list has to be visible from the closed control, not only from
+   inside the pop */
+.rail-folder-btn.filtering {
+  color: var(--accent);
 }
 
 /* rail-head map popover: the one entry point for opening any repository map */

@@ -16,6 +16,8 @@ interface AppState {
   error?: string;
   hideEmpty: boolean;
   harnessFilter?: string;
+  folderFilter?: string;
+  groupByFolder: boolean;
   railCollapsed: boolean;
   mapOnly: boolean;
   setView: (view: SceneView) => void;
@@ -29,10 +31,20 @@ interface AppState {
   setError: (error?: string) => void;
   setHideEmpty: (hideEmpty: boolean) => void;
   setHarnessFilter: (harness?: string) => void;
+  setFolderFilter: (folder?: string) => void;
+  setGroupByFolder: (group: boolean) => void;
   setRailCollapsed: (collapsed: boolean) => void;
 }
 
 const initialFilters = loadFilters();
+
+// one snapshot of the whole persisted record, taken after set() so zustand's
+// synchronous update is already visible. Adding a fifth filter means touching
+// this function and nothing else
+function persistFilters(get: () => AppState): void {
+  const { hideEmpty, harnessFilter, folderFilter, groupByFolder } = get();
+  saveFilters({ hideEmpty, harness: harnessFilter, folder: folderFilter, groupByFolder });
+}
 
 const RAIL_COLLAPSED_KEY = "spacewalk.railCollapsed";
 
@@ -51,6 +63,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   loading: false,
   hideEmpty: initialFilters.hideEmpty,
   harnessFilter: initialFilters.harness,
+  folderFilter: initialFilters.folder,
+  groupByFolder: initialFilters.groupByFolder,
   railCollapsed: loadRailCollapsed(),
   mapOnly: false,
   setView: (view) => set({ view }),
@@ -66,11 +80,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   setError: (error) => set({ error }),
   setHideEmpty: (hideEmpty) => {
     set({ hideEmpty });
-    saveFilters({ hideEmpty, harness: get().harnessFilter });
+    persistFilters(get);
   },
   setHarnessFilter: (harnessFilter) => {
     set({ harnessFilter });
-    saveFilters({ hideEmpty: get().hideEmpty, harness: harnessFilter });
+    persistFilters(get);
+  },
+  setFolderFilter: (folderFilter) => {
+    set({ folderFilter });
+    persistFilters(get);
+  },
+  setGroupByFolder: (groupByFolder) => {
+    set({ groupByFolder });
+    persistFilters(get);
   },
   setRailCollapsed: (railCollapsed) => {
     set({ railCollapsed });

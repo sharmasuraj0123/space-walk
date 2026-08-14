@@ -20,7 +20,7 @@ import { PlaybackEngine } from "./playback/reducer";
 import { downloadBlob, recordingSupported, recordPlayback } from "./playback/recorder";
 import { CityScene } from "./scene/CityScene";
 import { TreeScene } from "./scene/TreeScene";
-import { sessionVisible } from "./state/filters";
+import { effectiveFilters, sessionVisible } from "./state/filters";
 import { useAppStore } from "./state/store";
 import { Hud } from "./ui/Hud";
 import { Inspector } from "./ui/Inspector";
@@ -59,6 +59,8 @@ export default function App() {
     error,
     hideEmpty,
     harnessFilter,
+    folderFilter,
+    groupByFolder,
     railCollapsed,
     mapOnly,
     setView,
@@ -72,6 +74,8 @@ export default function App() {
     setError,
     setHideEmpty,
     setHarnessFilter,
+    setFolderFilter,
+    setGroupByFolder,
     setRailCollapsed
   } = useAppStore();
   const urlSessionConsumed = useRef(false);
@@ -272,9 +276,8 @@ export default function App() {
         currentActiveKey !== undefined && data.some((session) => session.key === currentActiveKey);
       // prefer a session the rail will actually show; if the filters hide
       // everything, the newest session still beats a blank stage
-      const fallback = (
-        data.find((session) => sessionVisible(session, { hideEmpty, harness: harnessFilter })) ?? data[0]
-      )?.key;
+      const listFilters = effectiveFilters(data, { hideEmpty, harness: harnessFilter, folder: folderFilter });
+      const fallback = (data.find((session) => sessionVisible(session, listFilters)) ?? data[0])?.key;
       const next = preferred ?? (stillListed ? currentActiveKey : fallback);
       if (next !== currentActiveKey) {
         const lens = resetLens();
@@ -294,7 +297,7 @@ export default function App() {
     } finally {
       endLoading();
     }
-  }, [beginLoading, endLoading, harnessFilter, hideEmpty, invalidateActorTracesForRescan, loadAgentGraph, loadSession, resetLens, setActiveSession, setError, setSessions]);
+  }, [beginLoading, endLoading, folderFilter, harnessFilter, hideEmpty, invalidateActorTracesForRescan, loadAgentGraph, loadSession, resetLens, setActiveSession, setError, setSessions]);
 
   const loadRepoMap = useCallback(async (repo?: string) => {
     beginLoading();
@@ -708,11 +711,15 @@ export default function App() {
           loading={loading}
           hideEmpty={hideEmpty}
           harnessFilter={harnessFilter}
+          folderFilter={folderFilter}
+          groupByFolder={groupByFolder}
           collapsed={railCollapsed}
           onSelect={selectSession}
           onRefresh={refresh}
           onHideEmptyChange={setHideEmpty}
           onHarnessFilterChange={setHarnessFilter}
+          onFolderFilterChange={setFolderFilter}
+          onGroupByFolderChange={setGroupByFolder}
           onCollapse={collapseRail}
           onOpenMap={openMap}
           activeRepo={trace?.session.cwd}
