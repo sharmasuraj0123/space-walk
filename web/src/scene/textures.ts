@@ -10,8 +10,8 @@ export function fireflyTexture(): THREE.Texture {
   const ctx = canvas.getContext("2d")!;
   const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
   g.addColorStop(0, "rgba(255,255,255,1)");
-  g.addColorStop(0.25, "rgba(255,210,160,0.55)");
-  g.addColorStop(1, "rgba(255,158,94,0)");
+  g.addColorStop(0.25, "rgba(214,236,152,0.55)");
+  g.addColorStop(1, "rgba(168,217,79,0)");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   fireflyMap = new THREE.CanvasTexture(canvas);
@@ -52,7 +52,7 @@ export function labelTexture(text: string): { texture: THREE.Texture; aspect: nu
   ctx.font = font;
   ctx.textBaseline = "middle";
   ctx.textAlign = "center";
-  ctx.fillStyle = "rgba(197, 205, 222, 0.95)";
+  ctx.fillStyle = "rgba(233, 228, 217, 0.95)";
   ctx.fillText(text, width / 2, height / 2 + 1);
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 4;

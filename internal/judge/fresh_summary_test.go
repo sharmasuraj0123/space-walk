@@ -3,7 +3,7 @@ package judge
 import (
 	"testing"
 
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 func TestFreshAgainstSummary(t *testing.T) {

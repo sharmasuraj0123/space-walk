@@ -10,8 +10,8 @@ import (
 	"slices"
 	"sync"
 
-	"github.com/cosmtrek/mindwalk/internal/judge"
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/judge"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 // maxConcurrentJudges bounds simultaneous judge subprocesses: each one is a

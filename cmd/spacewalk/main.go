@@ -8,19 +8,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cosmtrek/mindwalk/internal/adapter"
-	"github.com/cosmtrek/mindwalk/internal/adapter/claudecode"
-	"github.com/cosmtrek/mindwalk/internal/adapter/codex"
-	"github.com/cosmtrek/mindwalk/internal/adapter/pi"
-	"github.com/cosmtrek/mindwalk/internal/citymap"
-	"github.com/cosmtrek/mindwalk/internal/judge"
-	"github.com/cosmtrek/mindwalk/internal/model"
-	"github.com/cosmtrek/mindwalk/internal/server"
+	"github.com/xo-labs/spacewalk/internal/adapter"
+	"github.com/xo-labs/spacewalk/internal/adapter/claudecode"
+	"github.com/xo-labs/spacewalk/internal/adapter/codex"
+	"github.com/xo-labs/spacewalk/internal/adapter/pi"
+	"github.com/xo-labs/spacewalk/internal/citymap"
+	"github.com/xo-labs/spacewalk/internal/judge"
+	"github.com/xo-labs/spacewalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/server"
 )
 
 func main() {
 	if err := run(os.Args[1:]); err != nil {
-		fmt.Fprintln(os.Stderr, "mindwalk:", err)
+		fmt.Fprintln(os.Stderr, "spacewalk:", err)
 		os.Exit(1)
 	}
 }
@@ -75,7 +75,7 @@ func open(args []string) error {
 		return err
 	}
 	if fs.NArg() != 1 {
-		return fmt.Errorf("usage: mindwalk open [--no-open] <session.jsonl>")
+		return fmt.Errorf("usage: spacewalk open [--no-open] <session.jsonl>")
 	}
 	session, err := filepath.Abs(fs.Arg(0))
 	if err != nil {
@@ -93,7 +93,7 @@ func openMap(args []string) error {
 		return err
 	}
 	if fs.NArg() != 1 {
-		return fmt.Errorf("usage: mindwalk map [--no-open] <repo>")
+		return fmt.Errorf("usage: spacewalk map [--no-open] <repo>")
 	}
 	repo, err := filepath.Abs(fs.Arg(0))
 	if err != nil {
@@ -108,7 +108,7 @@ func build(args []string) error {
 		return err
 	}
 	if len(positional) != 1 {
-		return fmt.Errorf("usage: mindwalk build <repo> [-o out]")
+		return fmt.Errorf("usage: spacewalk build <repo> [-o out]")
 	}
 	city, err := citymap.Builder{}.Build(positional[0], nil)
 	if err != nil {
@@ -123,7 +123,7 @@ func trace(args []string) error {
 		return err
 	}
 	if len(positional) != 1 {
-		return fmt.Errorf("usage: mindwalk trace <session.jsonl> [-o out]")
+		return fmt.Errorf("usage: spacewalk trace <session.jsonl> [-o out]")
 	}
 	tr, err := parseTrace(positional[0])
 	if err != nil {
@@ -168,7 +168,7 @@ func analyze(args []string) error {
 		args = fs.Args()[1:]
 	}
 	if len(positional) != 1 {
-		return fmt.Errorf("usage: mindwalk analyze <session.jsonl> [-o out] [--judge claude|codex] [--model name] [--no-cache] [--no-rubric]")
+		return fmt.Errorf("usage: spacewalk analyze <session.jsonl> [-o out] [--judge claude|codex] [--model name] [--no-cache] [--no-rubric]")
 	}
 	session, err := filepath.Abs(positional[0])
 	if err != nil {
@@ -194,21 +194,21 @@ func analyze(args []string) error {
 		// re-run rather than silently returned without the layer.
 		if judge.FreshAgainstTrace(cached, tr) && judgeMatches(cached, *judgeCLI, *judgeModel) &&
 			judge.RubricSatisfied(cached) {
-			fmt.Fprintln(os.Stderr, "mindwalk: using cached report (pass --no-cache to re-run)")
+			fmt.Fprintln(os.Stderr, "spacewalk: using cached report (pass --no-cache to re-run)")
 			return writeJSON(*out, cached)
 		}
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), *timeout)
 	defer cancel()
-	fmt.Fprintf(os.Stderr, "mindwalk: judging %d events, this can take a minute or two…\n", tr.Session.EventCount)
+	fmt.Fprintf(os.Stderr, "spacewalk: judging %d events, this can take a minute or two…\n", tr.Session.EventCount)
 	report, err := judge.Analyze(ctx, tr, judge.Options{CLI: *judgeCLI, Model: *judgeModel, NoRubric: *noRubric, CachedReport: cached})
 	if err != nil {
 		return err
 	}
 	if !*noRubric {
 		if err := cache.Store(key, report); err != nil {
-			fmt.Fprintln(os.Stderr, "mindwalk: report cache write failed:", err)
+			fmt.Fprintln(os.Stderr, "spacewalk: report cache write failed:", err)
 		}
 	}
 	return writeJSON(*out, report)
@@ -265,14 +265,14 @@ func writeJSON(out string, v any) error {
 }
 
 func usage() {
-	fmt.Println(`mindwalk
+	fmt.Println(`spacewalk
 
 Usage:
-  mindwalk                        serve on a random local port and open the UI
-  mindwalk serve [--port N] [--no-open] [--claude-dir DIR] [--codex-dir DIR] [--pi-dir DIR]
-  mindwalk open [--no-open] <session.jsonl> open a specific Claude Code, Codex, or pi session
-  mindwalk map [--no-open] <repo>  open the repository citymap with no session
-  mindwalk build <repo> [-o out]  write citymap.json
-  mindwalk trace <session> [-o out] write trace.json
-  mindwalk analyze <session> [-o out] [--judge claude|codex] [--no-cache] [--no-rubric] evaluate a session with a local agent CLI`)
+  spacewalk                        serve on a random local port and open the UI
+  spacewalk serve [--port N] [--no-open] [--claude-dir DIR] [--codex-dir DIR] [--pi-dir DIR]
+  spacewalk open [--no-open] <session.jsonl> open a specific Claude Code, Codex, or pi session
+  spacewalk map [--no-open] <repo>  open the repository citymap with no session
+  spacewalk build <repo> [-o out]  write citymap.json
+  spacewalk trace <session> [-o out] write trace.json
+  spacewalk analyze <session> [-o out] [--judge claude|codex] [--no-cache] [--no-rubric] evaluate a session with a local agent CLI`)
 }

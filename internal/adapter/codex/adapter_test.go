@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/cosmtrek/mindwalk/internal/judge"
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/judge"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 func TestParseCodexSession(t *testing.T) {

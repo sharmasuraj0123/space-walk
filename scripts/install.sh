@@ -1,7 +1,11 @@
 #!/usr/bin/env sh
+# NOTE: this installer downloads published spacewalk release archives from
+# GitHub. No sharmasuraj0123/space-walk releases exist yet, so this script will fail
+# until the first release ships — build from source instead (see README:
+# make setup && make build -> bin/spacewalk).
 set -eu
 
-REPO="${REPO:-cosmtrek/mindwalk}"
+REPO="${REPO:-sharmasuraj0123/space-walk}"
 VERSION="${VERSION:-latest}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 
@@ -48,7 +52,7 @@ case "$arch" in
     ;;
 esac
 
-archive="mindwalk_${os}_${arch}.tar.gz"
+archive="spacewalk_${os}_${arch}.tar.gz"
 if [ "$VERSION" = "latest" ]; then
   base_url="https://github.com/$REPO/releases/latest/download"
   display_version="latest"
@@ -75,12 +79,12 @@ curl -fsSL "$base_url/checksums.txt" -o "$tmpdir/checksums.txt"
 )
 
 mkdir -p "$INSTALL_DIR"
-mv "$tmpdir/mindwalk" "$INSTALL_DIR/mindwalk"
-chmod +x "$INSTALL_DIR/mindwalk"
+mv "$tmpdir/spacewalk" "$INSTALL_DIR/spacewalk"
+chmod +x "$INSTALL_DIR/spacewalk"
 
-echo "installed mindwalk $display_version to $INSTALL_DIR/mindwalk"
+echo "installed spacewalk $display_version to $INSTALL_DIR/spacewalk"
 case ":$PATH:" in
   *":$INSTALL_DIR:"*) ;;
-  *) echo "add $INSTALL_DIR to PATH before running mindwalk" ;;
+  *) echo "add $INSTALL_DIR to PATH before running spacewalk" ;;
 esac
-echo "run: mindwalk --help"
+echo "run: spacewalk --help"

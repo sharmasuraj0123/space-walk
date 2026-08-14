@@ -18,7 +18,7 @@ test:
 
 build: embed-static
 	mkdir -p bin
-	go build -o bin/mindwalk ./cmd/mindwalk
+	go build -o bin/spacewalk ./cmd/spacewalk
 
 serve: web
-	go run ./cmd/mindwalk serve --port 8765 --dev
+	go run ./cmd/spacewalk serve --port 8765 --dev

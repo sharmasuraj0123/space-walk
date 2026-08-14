@@ -44,7 +44,7 @@ const JUDGE_MODELS: Record<string, { value: string; label: string }[]> = {
   ]
 };
 
-const JUDGE_CHOICE_KEY = "mindwalk:judge-choice";
+const JUDGE_CHOICE_KEY = "spacewalk:judge-choice";
 
 function loadStoredChoice(): JudgeChoice {
   try {

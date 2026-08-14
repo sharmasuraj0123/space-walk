@@ -32,8 +32,8 @@ interface CitySceneProps {
 // earned by attention — touch depth × revisits — so mountains grow where the
 // walker lingered. Light is data: only touched terrain gets bright color.
 const colors: Record<Touch | "unvisited" | "ghost" | "selected", THREE.Color> = {
-  unvisited: new THREE.Color("#5b6372"),
-  ghost: new THREE.Color("#404551"),
+  unvisited: new THREE.Color("#56534b"),
+  ghost: new THREE.Color("#3a3831"),
   ...touchColors
 };
 
@@ -63,14 +63,15 @@ function locHeight(t: number): number {
   return LOC_MIN_H + Math.pow(t, LOC_HEIGHT_GAMMA) * (LOC_MAX_H - LOC_MIN_H);
 }
 
-// LOC tier ramp: small files stay grey, then warm up through orange and purple
-// to red for the largest files. Stops are interpolated so the terrain reads as
-// a continuous gradient rather than hard bands.
+// LOC tier ramp: sequential single-hue steel with monotonic lightness — small
+// files stay deep and dark, the largest files rise to a bright steel blue.
+// Stops are interpolated so the terrain reads as a continuous gradient rather
+// than hard bands.
 const LOC_RAMP: { at: number; color: THREE.Color }[] = [
-  { at: 0.0, color: new THREE.Color("#5b6372") }, // grey (matches unvisited)
-  { at: 0.35, color: new THREE.Color("#e0894f") }, // orange
-  { at: 0.7, color: new THREE.Color("#9a6bd8") }, // purple
-  { at: 1.0, color: new THREE.Color("#e0524f") } // red
+  { at: 0.0, color: new THREE.Color("#233d53") }, // deepest steel (small files)
+  { at: 0.35, color: new THREE.Color("#336288") },
+  { at: 0.7, color: new THREE.Color("#4b89bb") },
+  { at: 1.0, color: new THREE.Color("#6cb2ec") } // brightest steel (largest files)
 ];
 function locColor(t: number): THREE.Color {
   for (let i = 1; i < LOC_RAMP.length; i++) {
@@ -172,9 +173,9 @@ export function CityScene({ city, playback, selectedPath, onSelect, onCanvasRead
     });
     controlsRef.current = controls;
 
-    const sky = new THREE.HemisphereLight("#66779b", "#161922", 1.7);
+    const sky = new THREE.HemisphereLight("#6f93ad", "#101318", 1.7);
     scene.add(sky);
-    const moon = new THREE.DirectionalLight("#b6c5de", 1.1);
+    const moon = new THREE.DirectionalLight("#9db8cc", 1.1);
     moon.position.set(-60, 120, -40);
     scene.add(moon);
 
@@ -345,13 +346,13 @@ export function CityScene({ city, playback, selectedPath, onSelect, onCanvasRead
 
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(size * 6, size * 6),
-      new THREE.MeshStandardMaterial({ color: "#14171e", roughness: 1 })
+      new THREE.MeshStandardMaterial({ color: "#101318", roughness: 1 })
     );
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -0.32;
     group.add(ground);
 
-    const grid = new THREE.GridHelper(size * 2.8, 46, "#20242e", "#1a1e27");
+    const grid = new THREE.GridHelper(size * 2.8, 46, "#242832", "#1b1f27");
     (grid.material as THREE.Material).transparent = true;
     (grid.material as THREE.Material).opacity = 0.5;
     grid.position.y = -0.3;
@@ -377,7 +378,7 @@ export function CityScene({ city, playback, selectedPath, onSelect, onCanvasRead
           new THREE.Vector3(dir.rect.w, height, dir.rect.d)
         );
         plates.setMatrixAt(i, matrix);
-        shade.set("#1a1f29").lerp(new THREE.Color("#252b37"), Math.min(dir.depth, 3) / 3);
+        shade.set("#161a20").lerp(new THREE.Color("#242832"), Math.min(dir.depth, 3) / 3);
         plates.setColorAt(i, shade);
       });
       plates.instanceMatrix.needsUpdate = true;

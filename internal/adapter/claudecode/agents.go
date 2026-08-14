@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/cosmtrek/mindwalk/internal/adapter"
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/adapter"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 type claudeAgentLaunch struct {

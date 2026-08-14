@@ -9,7 +9,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 func TestAgentNodeIDIsStableAndRootScoped(t *testing.T) {

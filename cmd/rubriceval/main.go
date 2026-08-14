@@ -22,11 +22,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cosmtrek/mindwalk/internal/adapter"
-	"github.com/cosmtrek/mindwalk/internal/adapter/claudecode"
-	"github.com/cosmtrek/mindwalk/internal/adapter/codex"
-	"github.com/cosmtrek/mindwalk/internal/judge"
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/adapter"
+	"github.com/xo-labs/spacewalk/internal/adapter/claudecode"
+	"github.com/xo-labs/spacewalk/internal/adapter/codex"
+	"github.com/xo-labs/spacewalk/internal/judge"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 // timingRunner wraps the real CLI runner and records each sealed call. The

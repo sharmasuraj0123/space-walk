@@ -34,7 +34,7 @@ interface AppState {
 
 const initialFilters = loadFilters();
 
-const RAIL_COLLAPSED_KEY = "mindwalk.railCollapsed";
+const RAIL_COLLAPSED_KEY = "spacewalk.railCollapsed";
 
 function loadRailCollapsed(): boolean {
   try {

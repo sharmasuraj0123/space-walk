@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cosmtrek/mindwalk/internal/judge"
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/judge"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 // reportIndexTTL bounds how stale the directory listing may get. The reports

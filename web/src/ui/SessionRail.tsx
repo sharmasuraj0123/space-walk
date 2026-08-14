@@ -91,7 +91,7 @@ export const SessionRail = memo(function SessionRail({
         <h1 className="wordmark">
           <LogoMark />
           <span>
-            mindwalk<span className="spark">.</span>
+            Space Walk<span className="spark">.</span>
           </span>
         </h1>
         <div className="rail-head-actions">

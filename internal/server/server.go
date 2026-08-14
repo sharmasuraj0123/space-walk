@@ -22,13 +22,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cosmtrek/mindwalk/internal/adapter"
-	"github.com/cosmtrek/mindwalk/internal/adapter/claudecode"
-	"github.com/cosmtrek/mindwalk/internal/adapter/codex"
-	"github.com/cosmtrek/mindwalk/internal/adapter/pi"
-	"github.com/cosmtrek/mindwalk/internal/citymap"
-	"github.com/cosmtrek/mindwalk/internal/judge"
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/adapter"
+	"github.com/xo-labs/spacewalk/internal/adapter/claudecode"
+	"github.com/xo-labs/spacewalk/internal/adapter/codex"
+	"github.com/xo-labs/spacewalk/internal/adapter/pi"
+	"github.com/xo-labs/spacewalk/internal/citymap"
+	"github.com/xo-labs/spacewalk/internal/judge"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 //go:embed static
@@ -163,7 +163,7 @@ func (s *Server) Start(openBrowser bool) error {
 		}
 		_ = openURL(pageURL)
 	}
-	fmt.Printf("mindwalk serving %s\n", addr)
+	fmt.Printf("spacewalk serving %s\n", addr)
 	return http.Serve(ln, s.handler())
 }
 
@@ -401,7 +401,7 @@ func (s *Server) handleSessionAgentTrace(w http.ResponseWriter, r *http.Request,
 }
 
 // handleRepoMap serves the citymap for a repo with no session / trace attached.
-// It backs the static full-repo map view (mindwalk map <repo> and the ?map=1 UI
+// It backs the static full-repo map view (spacewalk map <repo> and the ?map=1 UI
 // mode). The repo path comes from the ?repo= query param, falling back to the
 // server's configured RepoRoot. Maps are cached per path with a short TTL so a
 // long-running serve picks up tree changes, and the cache is size-bounded.
@@ -817,7 +817,7 @@ func (s *Server) runAgentGraphInflight(key string, load *inflightAgentGraph, sou
 		if r := recover(); r != nil {
 			load.graph = nil
 			load.err = fmt.Errorf("build agent graph %s: %v", key, r)
-			log.Printf("mindwalk: panic building agent graph %s: %v\n%s", key, r, debug.Stack())
+			log.Printf("spacewalk: panic building agent graph %s: %v\n%s", key, r, debug.Stack())
 		}
 		s.mu.Lock()
 		if load.err == nil {
@@ -879,7 +879,7 @@ func (s *Server) loadTraceAndMap(meta model.SessionMeta) (*model.Trace, *model.C
 	}
 	city, err := s.buildCityMap(repoRoot, trace)
 	if err != nil {
-		log.Printf("mindwalk: citymap build failed for %s: %v; serving empty map", repoRoot, err)
+		log.Printf("spacewalk: citymap build failed for %s: %v; serving empty map", repoRoot, err)
 		city = emptyCityMap(repoRoot)
 	} else {
 		assignFileIDs(trace, city)

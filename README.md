@@ -1,8 +1,8 @@
-# <img src="assets/logo.svg" alt="" width="30" /> mindwalk
+# <img src="assets/logo.svg" alt="" width="30" /> Space Walk
 
 A visualization tool that replays coding-agent sessions on a 3D map of your codebase.
 
-https://github.com/user-attachments/assets/5153481b-3805-45e6-a61f-372250a969eb
+Space Walk is [XO Labs](https://github.com/xo-labs)' fork of [mindwalk](https://github.com/cosmtrek/mindwalk) by cosmtrek (Ricko Yu), MIT-licensed.
 
 ## The problem
 
@@ -25,31 +25,36 @@ behind your own `claude` or `codex` CLI — see
 
 ## Quick start
 
+Build from source (requires Go and Node):
+
 ```sh
-curl -fsSL https://raw.githubusercontent.com/cosmtrek/mindwalk/master/scripts/install.sh | sh
-export PATH="$HOME/.local/bin:$PATH"
-mindwalk
+make setup && make build
+bin/spacewalk
 ```
 
-The installer verifies the binary against `checksums.txt` and installs to
-`~/.local/bin` (override with `INSTALL_DIR`; pin a release with `VERSION`).
-Windows archives are on [GitHub Releases](https://github.com/cosmtrek/mindwalk/releases)
-To build from source: `make setup && make build` → `bin/mindwalk`.
+Once spacewalk releases are published, the installer will be the short path —
+it verifies the binary against `checksums.txt` and installs to `~/.local/bin`
+(override with `INSTALL_DIR`; pin a release with `VERSION`). **No releases
+exist yet**, so until then, build from source as above:
 
->[!TIP]
->**Nix** users can add mindwalk via [numtide/llm-agents](https://github.com/numtide/llm-agents.nix) flake.
+```sh
+# pending first release — do not use yet
+curl -fsSL https://raw.githubusercontent.com/sharmasuraj0123/space-walk/main/scripts/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+spacewalk
+```
 
-With no arguments, mindwalk scans `~/.claude/projects`, `~/.codex/sessions`,
+With no arguments, Space Walk scans `~/.claude/projects`, `~/.codex/sessions`,
 and `~/.pi/agent/sessions`, serves the UI on a random local port, and opens a
 browser:
 
 ```text
-mindwalk serve [--port N] [--no-open] [--claude-dir DIR] [--codex-dir DIR] [--pi-dir DIR]
-mindwalk open [--no-open] <session.jsonl>   open one specific session
-mindwalk map [--no-open] <repo>             open a repository map, no session needed
-mindwalk build <repo> [-o out]              write the repository citymap JSON
-mindwalk trace <session> [-o out]           write the normalized trace JSON
-mindwalk analyze <session> [--judge claude|codex] [--model name] [--no-rubric]
+spacewalk serve [--port N] [--no-open] [--claude-dir DIR] [--codex-dir DIR] [--pi-dir DIR]
+spacewalk open [--no-open] <session.jsonl>  open one specific session
+spacewalk map [--no-open] <repo>            open a repository map, no session needed
+spacewalk build <repo> [-o out]             write the repository citymap JSON
+spacewalk trace <session> [-o out]          write the normalized trace JSON
+spacewalk analyze <session> [--judge claude|codex] [--model name] [--no-rubric]
                                             evaluate one session (see below)
 ```
 
@@ -57,16 +62,18 @@ mindwalk analyze <session> [--judge claude|codex] [--model name] [--no-rubric]
 
 - **Tree / Terrain views** — the repo as a radial tree or a treemap plain;
   glow ∝ how deeply and how often a file was touched.
-- **Touch states** — each file keeps its deepest touch: seen (moss green),
-  read (moonlight blue), edited (warm amber), unvisited (dark). Files the
-  session touched that are no longer in the repo linger as wireframe ghosts.
-  The HUD folds friction signals — error rate, churned files, edits after the
-  last verify — into a review strip.
+- **Touch states** — each file keeps its deepest touch: seen (olive), read
+  (steel blue), edited (lime), unvisited (dark). Files the session touched
+  that are no longer in the repo linger as wireframe ghosts. The HUD folds
+  friction signals — error rate, churned files, edits after the last verify —
+  into a review strip. The encoding colors are validated for colour-vision
+  separation and contrast against the night surface, not merely picked to
+  match the brand — see [docs/palette-validation.md](docs/palette-validation.md).
 - **Playback deck** — scrub or play the session over a bucketed histogram of
-  the run. Bars sit on a cool/warm spectrum: observation stays cool (search,
-  read, exec), mutation glows warm (edit, verify), so editing phases jump out
-  at a glance. Restart, speed, and video export fold into the deck's `⋯` menu;
-  export records the playback to a `.webm` entirely client-side.
+  the run. Observation recedes into deliberate neutrals (search, exec) while
+  mutation glows in the accent greens (edit, verify), so editing phases jump
+  out at a glance. Restart, speed, and video export fold into the deck's `⋯`
+  menu; export records the playback to a `.webm` entirely client-side.
 - **Timeline marks** — `◇` context compactions, `○` subagent launches,
   `›` user turns; every mark is a click-to-jump target.
 - **Agent lenses** — when a session launched subagents, the HUD carries a
@@ -78,13 +85,13 @@ mindwalk analyze <session> [--judge claude|codex] [--model name] [--no-rubric]
   scored against criteria drafted from your own request; session rows carry
   the evaluation state as a quiet badge. See
   [Session evaluation](#session-evaluation).
-- **Repo map** — `mindwalk map <repo>` (or the folder icon in the session
+- **Repo map** — `spacewalk map <repo>` (or the folder icon in the session
   rail) renders any repository's citymap with no session attached; height
   encodes lines of code instead of attention.
 
-![the same session on the terrain view](assets/screenshot-terrain.png)
+![a session on the terrain view — the edited district glows, the trail arcs in over the dark plain](assets/screenshot-terrain.png)
 
-![agent lenses over the same session](assets/screenshot-agents.png)
+![the same session on the tree view, with the review strip and playback deck](assets/screenshot-tree.png)
 
 Keyboard: `Space` play/pause · `←`/`→` step (`⇧` ×10) · `Home`/`End` ends ·
 `S` speed · `V` view · `E` next edit · `X` next error · `M` next mark ·
@@ -92,7 +99,7 @@ Keyboard: `Space` play/pause · `←`/`→` step (`⇧` ×10) · `Home`/`End` en
 
 ## Session evaluation
 
-The evaluate panel (and `mindwalk analyze`) asks a local agent CLI to judge
+The evaluate panel (and `spacewalk analyze`) asks a local agent CLI to judge
 how the session went. A report has two layers:
 
 - **Process dimensions** — exploration, scope, wandering, verification: four
@@ -125,7 +132,7 @@ account. Nothing is sent while viewing sessions, and no other session is
 included. The judge subprocess runs sealed: no tools, no MCP servers, no user
 or project settings, and no session persistence.
 
-Reports are cached in `~/.mindwalk/reports`, one per session; a report goes
+Reports are cached in `~/.spacewalk/reports`, one per session; a report goes
 stale (never auto-reruns) when the session's content changes. Re-evaluating
 a session whose task wording hasn't changed reuses the drafted criteria —
 scores can move, the yardstick doesn't.
@@ -157,7 +164,7 @@ Issues and pull requests are welcome. To get a working dev setup:
 make setup   # install frontend dependencies
 make serve   # dev server on :8765, serving web/dist from the working tree
 make test    # go test + frontend build — run before sending a PR
-make build   # regenerate embedded assets and bin/mindwalk
+make build   # regenerate embedded assets and bin/spacewalk
 ```
 
 Ground rules (see [AGENTS.md](AGENTS.md) for the full architecture notes):
@@ -170,16 +177,7 @@ Ground rules (see [AGENTS.md](AGENTS.md) for the full architecture notes):
 - When trace, citymap, or report JSON shapes change, update `schema/` and the
   relevant tests in the same change.
 
-## Star History
-
-<a href="https://www.star-history.com/?repos=cosmtrek%2Fmindwalk&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=cosmtrek/mindwalk&type=date&theme=dark&legend=top-left&sealed_token=6ylPq85HVVSbxQtqpYdSNx2EFZXMTk4AhnMG197AQm7TDwfenvf415jqPnPRxRiXz4l_f7NRUM2OlNDptSLXC18Q7cX8CQpUBkJtepMUJg6gYhdNM9fTBqBN08fY19HNfmoCFjN2SThT9w81tO_WWCThVBZtf8tMRUC7Bmi3jJ3HFs-4734aDGFw-LOe" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=cosmtrek/mindwalk&type=date&legend=top-left&sealed_token=6ylPq85HVVSbxQtqpYdSNx2EFZXMTk4AhnMG197AQm7TDwfenvf415jqPnPRxRiXz4l_f7NRUM2OlNDptSLXC18Q7cX8CQpUBkJtepMUJg6gYhdNM9fTBqBN08fY19HNfmoCFjN2SThT9w81tO_WWCThVBZtf8tMRUC7Bmi3jJ3HFs-4734aDGFw-LOe" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=cosmtrek/mindwalk&type=date&legend=top-left&sealed_token=6ylPq85HVVSbxQtqpYdSNx2EFZXMTk4AhnMG197AQm7TDwfenvf415jqPnPRxRiXz4l_f7NRUM2OlNDptSLXC18Q7cX8CQpUBkJtepMUJg6gYhdNM9fTBqBN08fY19HNfmoCFjN2SThT9w81tO_WWCThVBZtf8tMRUC7Bmi3jJ3HFs-4734aDGFw-LOe" />
- </picture>
-</a>
-
 ## License
 
-[MIT](LICENSE) © 2026 Ricko Yu
+[MIT](LICENSE) © 2026 Ricko Yu — the upstream copyright and license are
+preserved (see the fork credit above).

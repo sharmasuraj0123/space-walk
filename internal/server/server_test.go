@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmtrek/mindwalk/internal/adapter"
-	"github.com/cosmtrek/mindwalk/internal/citymap"
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/adapter"
+	"github.com/xo-labs/spacewalk/internal/citymap"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 func TestTraceStillLoadsWhenSessionCwdIsMissing(t *testing.T) {

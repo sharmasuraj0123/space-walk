@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 func TestBuildIsDeterministic(t *testing.T) {

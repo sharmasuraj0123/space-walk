@@ -1,4 +1,4 @@
-module github.com/cosmtrek/mindwalk
+module github.com/xo-labs/spacewalk
 
 go 1.25
 

@@ -33,16 +33,16 @@ interface TreeSceneProps {
 // halo radius says HOW MUCH (visits), branch brightness says WHERE the
 // light is, and the selection is a shape (ring + beam), never a recolor.
 const colors: Record<Touch | "unvisited" | "ghost" | "selected", THREE.Color> = {
-  unvisited: new THREE.Color("#5a6375"),
-  ghost: new THREE.Color("#4d5464"),
+  unvisited: new THREE.Color("#56534b"),
+  ghost: new THREE.Color("#3a3831"),
   ...touchColors
 };
-const EDGE_BASE = new THREE.Color("#3c424f");
+const EDGE_BASE = new THREE.Color("#242832");
 // branches leading to visited leaves brighten, but stay neutral: the branch
 // guides the eye, the leaf carries the classification
-const EDGE_LIT = new THREE.Color("#7d8496");
-// white-hot walker: keeps the firefly apart from edit-amber leaves
-const FIREFLY_HOT = new THREE.Color("#ffeeda");
+const EDGE_LIT = new THREE.Color("#7d786d");
+// white-hot walker: keeps the firefly apart from edit-green leaves
+const FIREFLY_HOT = new THREE.Color("#f2fadf");
 const LEAF_Y = 0.7;
 
 // halo radius encodes revisits only — touch type already lives in the leaf
@@ -127,9 +127,9 @@ export function TreeScene({ city, playback, selectedPath, onSelect, onCanvasRead
     });
     controlsRef.current = controls;
 
-    const sky = new THREE.HemisphereLight("#66779b", "#161922", 1.7);
+    const sky = new THREE.HemisphereLight("#6f93ad", "#101318", 1.7);
     scene.add(sky);
-    const moon = new THREE.DirectionalLight("#b6c5de", 1.1);
+    const moon = new THREE.DirectionalLight("#9db8cc", 1.1);
     moon.position.set(-60, 120, -40);
     scene.add(moon);
 
@@ -305,13 +305,13 @@ export function TreeScene({ city, playback, selectedPath, onSelect, onCanvasRead
 
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(size * 6, size * 6),
-      new THREE.MeshStandardMaterial({ color: "#14171e", roughness: 1 })
+      new THREE.MeshStandardMaterial({ color: "#101318", roughness: 1 })
     );
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -0.25;
     group.add(ground);
 
-    const grid = new THREE.GridHelper(size * 2.4, 40, "#1d222c", "#181c25");
+    const grid = new THREE.GridHelper(size * 2.4, 40, "#242832", "#1b1f27");
     (grid.material as THREE.Material).transparent = true;
     (grid.material as THREE.Material).opacity = 0.4;
     grid.position.y = -0.24;

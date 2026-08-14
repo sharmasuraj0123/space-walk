@@ -4,16 +4,19 @@ import type { Touch } from "../types";
 // Shared scene vocabulary. The touch colors are the meaning the HUD legend
 // promises; both scenes must draw them identically. Ambient colors (ground,
 // unvisited, ghost) stay per-scene tuning.
-export const SKY = new THREE.Color("#12151c");
-export const EMBER = new THREE.Color("#ff9e5e");
+export const SKY = new THREE.Color("#0b0c0f");
+export const EMBER = new THREE.Color("#c8674c");
 
+// Lit emissive tints of the HUD swatches: the scene may glow lighter than the
+// flat legend colors, but hue family and salience order (edit > read > hit)
+// must match what the legend promises.
 export const touchColors: Record<Touch | "selected", THREE.Color> = {
-  hit: new THREE.Color("#8fb45f"),
-  // chromatic enough to read as blue on lit terrain columns — a paler tint
-  // washed out to white and stopped matching the HUD legend
-  read: new THREE.Color("#a5c8f1"),
-  edit: new THREE.Color("#f0ad5a"),
-  selected: new THREE.Color("#f6ead2")
+  hit: new THREE.Color("#a8a24e"),
+  // chromatic enough to read as steel blue on lit terrain columns — a paler
+  // tint washed out to white and stopped matching the HUD legend
+  read: new THREE.Color("#9dc0e8"),
+  edit: new THREE.Color("#a8d94f"),
+  selected: new THREE.Color("#e9e4d9")
 };
 
 // Distance along `dir` that fits every point inside the camera frustum.

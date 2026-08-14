@@ -17,7 +17,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/cosmtrek/mindwalk/internal/model"
+	"github.com/xo-labs/spacewalk/internal/model"
 )
 
 type Builder struct{}
